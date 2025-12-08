@@ -18,11 +18,16 @@ const getAllPost = async (req: Request, res: Response) => {
     const isFeatured = req.query.isFeatured
       ? req.query.isFeatured === "true"
       : undefined;
+
+    const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
+    const sortBy = (req.query.title as string) || "";
     const result = await PostService.getAllPost({
       page,
       limit,
       search,
       isFeatured,
+      tags,
+      sortBy,
     });
 
     res.status(200).json(result);
@@ -30,10 +35,10 @@ const getAllPost = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message, error });
   }
 };
+
 const getSinglePost = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    console.log("ID FROM ROUTE =", id);
     const result = await PostService.getSinglePost(id);
     res.status(200).json(result);
   } catch (error: any) {
