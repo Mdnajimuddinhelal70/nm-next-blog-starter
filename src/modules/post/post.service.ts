@@ -26,6 +26,28 @@ const getBlogStat = async () => {
       _max: { views: true },
       _min: { views: true },
     });
+
+    const featuredCount = await tx.post.count({
+      where: {
+        isFeatured: true,
+      },
+    });
+
+    const topFeatured = await tx.post.count({
+      where: { isFeatured: true },
+      orderBy: { views: "desc" },
+    });
+
+    const lassWeek = new Date();
+    lassWeek.setDate(lassWeek.getDate() - 7);
+
+    const lasrWeekPostCount = await tx.post.count({
+      where: {
+        createdAt: {
+          gte: lassWeek,
+        },
+      },
+    });
     return {
       stats: {
         totalPosts: aggregates._count ?? 0,
@@ -33,6 +55,13 @@ const getBlogStat = async () => {
         avglViews: aggregates._avg.views ?? 0,
         minlViews: aggregates._min.views ?? 0,
         maxlViews: aggregates._max.views ?? 0,
+      },
+      featured: {
+        count: featuredCount,
+      },
+      topFeatured: {
+        count: topFeatured,
+        lasrWeekPostCount,
       },
     };
   });
