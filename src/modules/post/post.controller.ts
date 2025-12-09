@@ -9,6 +9,14 @@ const createPost = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message, error });
   }
 };
+const getBlogStat = async (req: Request, res: Response) => {
+  try {
+    const result = await PostService.getBlogStat();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch stats", details: err });
+  }
+};
 
 const getAllPost = async (req: Request, res: Response) => {
   try {
@@ -73,4 +81,5 @@ export const PostController = {
   getSinglePost,
   updatePost,
   deletePost,
+  getBlogStat,
 };
